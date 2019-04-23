@@ -1,5 +1,6 @@
 from flask import Flask
 from Source.flask_celery import make_celery
+from Source.poke_data import PokeData
 
 app = Flask(__name__)
 app.config.update(
@@ -8,6 +9,11 @@ app.config.update(
 )
 
 celery = make_celery(app)
+
+
+@app.route('/poke-data/<task>')
+def poke_data(task):
+    return PokeData().exc(task=task)
 
 
 @app.route('/process/<name>')

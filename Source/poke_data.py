@@ -1,13 +1,28 @@
 import requests
-from flask import jsonify
 
 from Source.config import database
 from Source.settings import CONFIG
 
 
 class PokeData:
+    methods = dict()
+
     def __init__(self):
         self.data = database["poke-monsters"]
+        self.methods.update({
+            'update': {
+                'exc': self.update,
+                'Async': True
+            },
+            'list': {
+                'exc': self.retrieve_all,
+                'Async': False
+            },
+            'update-powers': {
+                'exc': self.pokemons_get_powers,
+                'Async': False
+            },
+        })
 
     def update(self, **kwargs):
         all_pokemons = list()
@@ -18,58 +33,39 @@ class PokeData:
         all_pokemons += response['results']
         self.data.drop()
         self.data.insert_many(all_pokemons)
-        return "holi"
+        return True
 
     def pokemons_get_powers(self, **kwargs):
-        pokemons = self.data.find()
-        for chinense_draw in pokemons[0:1]:
-            key = dict(_id=chinense_draw['_id'])
-            new_data = dict(chinense_draw)
-            new_data['moves'] = list()
-            new_data['moves_url'] = list(requests.get(chinense_draw['url']).json()['moves'])
-            for x in new_data['moves_url']:
-                print(x['move'].keys())
-                data = requests.get(x['move']['url']).json()
-                new_data['moves'].append(dict(
-                    name=x['move']['name'],
-                    power=data['power'],
-                    accuracy=data['accuracy']
-                ))
+        chinese_draw = kwargs.get('pokemon', None)
+        if not chinese_draw:
+            return False
 
-            # chinense_draw = requests.get(chinense_draw['url'])
-            self.data.update_one(key, { "$set": new_data})
-        return jsonify(
-            {
-                'status': 200,
-                'data': 'done'
-            }
-        )
+        key = dict(_id=chinese_draw['_id'])
+        new_data = dict(chinese_draw)
+        new_data['moves'] = list()
+        new_data['moves_url'] = list(requests.get(chinese_draw['url']).json()['moves'])
+        for x in new_data['moves_url']:
+            data = requests.get(x['move']['url']).json()
+            new_data['moves'].append(dict(
+                name=x['move']['name'],
+                power=data['power'] or 0,
+                accuracy=data['accuracy'] or 0
+            ))
+        self.data.update_one(key, {"$set": new_data})
+        return True
 
     def retrieve_all(self, **kwargs):
         pokemons = self.data.find()
         data = [dict(
             name=x['name'],
-            moves=x.get('moves', None)
+            moves=x.get('moves', None) or []
         ) for x in pokemons]
-        print(f'data es: {data}')
-        return jsonify(
-            {
-                'status': 200,
-                'data': data
-            }
-        )
+        return data
 
-    # @staticmethod
     def exc(self, **kwargs):
-        methods = {
-            'update': self.update,
-            'list': self.retrieve_all,
-            'update-powers': self.pokemons_get_powers,
-        }
-
         task = kwargs.get('task', None)
-        method = methods.get(task, None)
+        method = self.methods.get(task, None)
 
         if not method:
             raise Exception('Invalid task required')
-        return method(**kwargs)
+        return method['exc'](**kwargs)

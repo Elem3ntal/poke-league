@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import jsonify
+from flask import request
 
 from Source.flask_celery import make_celery
 from Source.poke_data import PokeData
@@ -13,19 +14,25 @@ app.config.update(
 celery = make_celery(app)
 
 
-@app.route('/poke-data/<task>')
+@app.route('/poke-data/<task>', methods=['GET', 'POST'])
 def poke_data(task):
+    kwargs_request = dict(request.get_json() or {})
+    kwargs_request.update(dict(request.args))
+    kwargs_request.update(dict(task=task))
+
     _task = PokeData()
     with_celery = _task.methods.get(task, {}).get('Async', False)
+
     if with_celery:
-        execute_poke_task.delay(task)
+        execute_poke_task.delay(**kwargs_request)
         return jsonify({
             'status': 200,
             'data': {
                 'Async': True,
             }
         })
-    data = _task.exc(task=task)
+
+    data = _task.exc(**kwargs_request)
     return jsonify({
         'status': 200,
         'data': {
@@ -35,8 +42,8 @@ def poke_data(task):
 
 
 @celery.task(name='app.poke-task')
-def execute_poke_task(task):
-    return PokeData().exc(task=task)
+def execute_poke_task(**kwargs):
+    return PokeData().exc(**kwargs)
 
 
 if __name__ == '__main__':

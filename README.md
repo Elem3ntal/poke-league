@@ -20,3 +20,13 @@ the command install of the makefile runs:
 
 ### clean
 cleans ~~(delete)~~ the virtual environment of the app.
+
+# Endpoints available
+
+http://localhost:5000/poke-data/update
+http://localhost:5000/poke-data/list
+http://localhost:5000/poke-data/list
+http://localhost:5000/poke-data/update-powers
+http://localhost:5000/poke-league/list
+http://localhost:5000/poke-league/new-contender
+http://localhost:5000/poke-league/new-league

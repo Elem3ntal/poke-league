@@ -22,7 +22,7 @@ class PokeData:
             },
             'update-powers': {
                 'exc': self.pokemons_get_powers,
-                'Async': False
+                'Async': True
             },
         })
 

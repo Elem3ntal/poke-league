@@ -22,9 +22,9 @@ cleans ~~(delete)~~ the virtual environment of the app.
 # How to run?
 well, if all is already installed, just set to run two process.
 
->celery -A app.celery worker --loglevel=info
+>nohup celery -A app.celery worker --loglevel=info &
 
->python app.py
+>nohup python app.py &
 
 # How to request?
 all the resources can be consumed as a get or post request. if is a post request in the headers have to set Content-Type as application/json and in the body pass a json with the parameters.

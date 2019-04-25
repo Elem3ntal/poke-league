@@ -34,6 +34,7 @@ If both ways of consume the resource are in use, first is created all the params
 # Endpoints available
 
 by the moment that this guide is realized, host can be replaced as:
+
 host = 3.212.254.150:5000
 
 #### _host_/poke-data/update
@@ -106,7 +107,7 @@ Recreate the procedure of a normal fight, but it don't have the constraint that 
 | player1  |  str  |
 | player2  |  str  |
    
-### host/poke-league/list
+### _host_/poke-league/list
 <sub>(the procedure is Sync)</sub> 
 
 Retrieve a list of all leagues with is contenders.
@@ -116,10 +117,10 @@ Retrieve a list of all leagues with is contenders.
 |:-----------:|:---------:|
 | None  |  -  |
 
-### host/poke-league/ranking
+### _host_/poke-league/ranking
 <sub>(the procedure is Sync)</sub> 
 
-If the parameter 'league' is input, it retrieve a ranking (a sorted list) of all the contenders at the league, if not of all the leagues, sorted by his score in win/draw/lose.
+If the parameter '_league_' is input, it retrieve a ranking (a sorted list) of all the contenders at the league, if not of all the leagues, sorted by his score in win/draw/lose.
 
 | parameters  | value tye |
 |:-----------:|:---------:|

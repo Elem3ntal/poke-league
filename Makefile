@@ -39,10 +39,11 @@ install_requirements_system:
 	@+echo $(HEADER)"Instalando paqueteria del sistema"
 	@+echo "---------------------------------------------"$(END)
 	@+echo $(HEADER)""
-	if ! dpkg -l | grep redis-server -c >>/dev/null; then sudo apt-get install redis-server; fi
+	sudo apt-get install -y python3 python3-pip virtualenvwrapper
+	if ! dpkg -l | grep redis-server -c >>/dev/null; then sudo apt-get install -y redis-server; fi
 	@+echo $(OKGREEN)"[OK] Redis"$(END)
 	@+echo $(HEADER)""
-	if ! dpkg -l | grep mongodb-server -c >>/dev/null; then sudo apt-get install mongodb; fi
+	if ! dpkg -l | grep mongodb-server -c >>/dev/null; then sudo apt-get install -y mongodb; fi
 	@+echo $(OKGREEN)"[OK] Mongodb"$(END)
 	@+echo $(OKGREEN)"[OK] Paqueteria lista"$(END)
 	@+echo ""

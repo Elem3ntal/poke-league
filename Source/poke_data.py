@@ -39,21 +39,11 @@ class PokeData:
 
     def pokemons_get_powers(self, **kwargs):
         chinese_draw = kwargs.get('pokemon', None)
+        chinese_draw = self.data.find(dict(name=chinese_draw))[0]
         if not chinese_draw:
             return False
-
-        key = dict(name=chinese_draw['name'])
-        new_data = dict(chinese_draw)
-        new_data['moves'] = list()
-        new_data['moves_url'] = list(requests.get(chinese_draw['url']).json()['moves'])
-        for x in new_data['moves_url']:
-            data = requests.get(x['move']['url']).json()
-            new_data['moves'].append(dict(
-                name=x['move']['name'],
-                power=data['power'] or 0,
-                accuracy=data['accuracy'] or 0
-            ))
-        self.data.update_one(key, {"$set": new_data})
+        new_data = self.pokemon_get_power(chinese_draw)
+        self.data.update_one(chinese_draw, {"$set": new_data})
         return True
 
     def retrieve_all(self, **kwargs):

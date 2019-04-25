@@ -31,6 +31,18 @@ all the resources can be consumed as a get or post request. if is a post request
 
 If both ways of consume the resource are in use, first is created all the params from post(body json) variables, and then updates (and create if not exist) the variables that arrive by get.
 
+example:
+
+| parameters  | value tye |
+|:-----------:|:---------:|
+| host   |  3.212.254.150:5000/poke-data/new-league  | 
+| method   |  POST  | 
+| header   |  Content-Type:application/json  | 
+| body   |  { "name": "testing league pokemon!"}  | 
+ 
+ or 
+ > 3.212.254.150:5000/poke-league/new-league?name=creating league from get
+ 
 # Endpoints available
 
 by the moment that this guide is realized, host can be replaced as:
